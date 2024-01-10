@@ -22,7 +22,7 @@ VOLUME /var/www/html/wp-content
 VOLUME /var/www/html/plugins
 
 # Copy the wp-config.php with custom configuration
-COPY wp-config-docker.php /var/www/html/wp-config.php
+COPY wp-config.php /var/www/html/wp-config.php
 
 # Switch to the root user for installation and configuration
 #USER root
