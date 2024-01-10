@@ -1,28 +1,34 @@
 # Use the official WordPress image
 FROM wordpress:latest
 
-# Set environment variables for MySQL connection
-ENV WORDPRESS_DB_HOST=mysql \
-    WORDPRESS_DB_NAME=wpcoreng \
-    WORDPRESS_DB_USER=wpcoreng \
-    WORDPRESS_DB_PASSWORD=palazzo
+# Set the working directory to the WordPress installation
+WORKDIR /var/www/html
 
-# Install wp-cli
-RUN set -ex; \
-    curl -o /usr/local/bin/wp -SL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
-    chmod +x /usr/local/bin/wp
+# Copy custom themes and plugins (if needed)
+# COPY custom-theme/ wp-content/themes/custom-theme/
+# COPY custom-plugin/ wp-content/plugins/custom-plugin/
 
-# Expose port 80 for HTTP
+# Expose port 80 for the web server
 EXPOSE 80
 
-# Start Apache web server
-CMD ["apache2-foreground"]
+# Environment variables for configuring WordPress
+ENV WORDPRESS_DB_HOST=mysql1.serv00.com
+ENV WORDPRESS_DB_USER=m7754_wpcoreng
+ENV WORDPRESS_DB_PASSWORD=Rabiu2004@
+ENV WORDPRESS_DB_NAME=m7754_wpcoreng
 
-# Custom entrypoint to handle WordPress installation
-COPY docker-entrypoint.sh /usr/local/bin/
+# Volumes for persisting data
+VOLUME /var/www/html/wp-content
+VOLUME /var/www/html/plugins
 
-# Ensure the entrypoint script is executable
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Copy the wp-config.php with custom configuration
+COPY wp-config-docker.php /var/www/html/wp-config.php
 
-# Set the custom entrypoint as the default entrypoint
-ENTRYPOINT ["docker-entrypoint.sh"]
+# Switch to the root user for installation and configuration
+#USER root
+
+# Install additional tools if needed
+# For example, if you need to use wp-cli, you can install it here
+
+# Switch back to the WordPress user
+USER www-data
